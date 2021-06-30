@@ -1,0 +1,42 @@
+:host {
+    font-size: 30px;
+
+}
+
+.timer-container {
+    margin-bottom: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-self: start;
+    justify-content: center;
+    align-items: center;
+}
+
+:host button {
+    width: 150px;
+    font-size: 30px;
+    margin-right: 15px;
+    margin-left: 20px;
+}
+
+.timer-name {
+    margin-right: 20px;
+    min-width: 250px;
+}
+
+.timer-time {
+    margin-right: 50px;
+}
+
+.timer-toggle {
+    background-color: lightblue;
+    border-radius: 20px;
+}
+
+.timer-reset {
+    background-color: red;
+    color: white;
+    border-radius: 20px;
+    margin-left: 50px;
+}
