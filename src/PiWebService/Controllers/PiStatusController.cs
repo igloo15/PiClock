@@ -26,5 +26,17 @@ namespace PiWebService.Controllers
         {
             return _service?.Status;
         }
+
+        [HttpGet("commands")]
+        public PiCommand[] GetCommands()
+        {
+            return _service.GetCommands();
+        }
+
+        [HttpPost]
+        public async Task UpdateClock(PiClockStatus status)
+        {
+            await _service.PublishClock(status);
+        }
     }
 }

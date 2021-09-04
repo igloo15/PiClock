@@ -1,12 +1,21 @@
+import { HttpClient } from '@angular/common/http';
+import { interval, Observable } from 'rxjs';
+import { startWith, switchMap, map } from 'rxjs/operators';
+import { PiClockStatus, PiStatus } from '../../models/pi.status';
 
 export class PiTimer {
     counter = 0;
     timeout: any;
     actionText = 'Start';
     name: string;
+    displayName: string;
+    status: string;
+    http: HttpClient;
 
-    constructor(name: string) {
+    constructor(name: string, displayName: string, http: HttpClient) {
         this.name = name;
+        this.displayName = displayName;
+        this.http = http;
         this.load();
         if (this.actionText === 'Start') {
             this.stop();
@@ -52,7 +61,12 @@ export class PiTimer {
     }
 
     start(): void {
+        if (this.status === 'running') {
+            return;
+        }
         this.actionText = 'Stop';
+        this.status = 'running';
+        this.updateClock();
         this.timeout = setInterval(() => {
             if (this.counter % 60 === 0) {
                 this.save();
@@ -63,6 +77,8 @@ export class PiTimer {
 
     stop(): void {
         this.actionText = 'Start';
+        this.status = 'stopped';
+        this.updateClock();
         if (this.timeout) {
             clearInterval(this.timeout);
             this.save();
@@ -89,5 +105,24 @@ export class PiTimer {
     save(): void {
         window.localStorage.setItem(`${this.name}-timer`, this.counter.toString());
         window.localStorage.setItem(`${this.name}-action`, this.actionText);
+        this.updateClock();
+    }
+
+    addTime(seconds: number): void {
+        this.counter += seconds;
+    }
+
+    removeTime(seconds: number): void {
+        this.counter -= seconds;
+    }
+
+    private updateClock(): void {
+        const status = {
+            name: this.name,
+            displayName: this.displayName,
+            status: this.status,
+            timeInSeconds: this.counter
+        };
+        this.http.post<PiClockStatus>('http://localhost:5000/api/pistatus', status).subscribe(res => {});
     }
 }
